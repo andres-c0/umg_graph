@@ -60,22 +60,13 @@ Esta guía está diseñada para que puedas trabajar de forma ordenada y eficient
    git push origin feature/nueva_funcionalidad_etl
    ```
 
-3. (Opcional) Abrí un Pull Request en GitHub hacia `develop`
+3. Abrí un Pull Request en GitHub hacia `develop`
 
-4. Si finalizaste esa funcionalidad:
-   - Mergeá a develop:
-     ```bash
-     git checkout develop
-     git pull origin develop
-     git merge feature/nueva_funcionalidad_etl
-     git push origin develop
-     ```
-
-   - Eliminá la rama:
-     ```bash
-     git branch -d feature/nueva_funcionalidad_etl
-     git push origin --delete feature/nueva_funcionalidad_etl
-     ```
+5. Eliminá la rama:
+   ```bash
+   git branch -d feature/nueva_funcionalidad_etl
+   git push origin --delete feature/nueva_funcionalidad_etl
+   ```
 
 ---
 
@@ -88,5 +79,3 @@ Esta guía está diseñada para que puedas trabajar de forma ordenada y eficient
 - Usá nombres claros para tus ramas: `feature/facebook_etl`, `hotfix/arreglo_fecha`, etc.
 
 ---
-
-Con esta rutina mantenés tu repo limpio, ordenado y profesional ✨
