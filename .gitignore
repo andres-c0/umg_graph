@@ -25,3 +25,5 @@ replay_pid*
 
 # Paquetes nativos
 nbproject/
+build.xml
+manifest.mf
