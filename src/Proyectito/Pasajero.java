@@ -1,4 +1,4 @@
-package proyectoprogra3;
+package Proyectito;
 
 public class Pasajero {
     int idPasajero;

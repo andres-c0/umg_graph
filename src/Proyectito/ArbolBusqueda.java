@@ -1,4 +1,4 @@
-package proyectoprogra3;
+package Proyectito;
 
 public class ArbolBusqueda {
     Pasajero raiz;
@@ -24,25 +24,25 @@ public class ArbolBusqueda {
     
     
     // Busca un pasajero por ID, e imprime el resultado junto con los saltos y tiempo
-    public void buscar(int id) {
-        long inicio = System.nanoTime(); // Tiempo de inicio
-        int saltos = 0;
-        Pasajero actual = raiz;
+   public String buscar(int id) {
+       long inicio = System.nanoTime(); // Tiempo de inicio
+       int saltos = 0;
+       Pasajero actual = raiz;
 
-        while (actual != null) {
-            saltos++; // Contador de saltos
-            if (id == actual.idPasajero) {
-                long tiempo = System.nanoTime() - inicio;
-                System.out.println("Encontrado: " + actual.getPasajero());
-                System.out.println("Saltos: " + saltos + ", Tiempo: " + tiempo + " ns");
-                return;
-            } else if (id < actual.idPasajero) {
-                actual = actual.izquierda; // Buscar en subárbol izquierdo
-            } else {
-                actual = actual.derecha; // Buscar en subárbol derecho
-            }
+    while (actual != null) {
+        saltos++; // Contador de saltos
+        if (id == actual.idPasajero) {
+            long tiempo = System.nanoTime() - inicio;
+            return "Encontrado: " + actual.getPasajero() +
+                   "\nSaltos: " + saltos +
+                   "\nTiempo: " + tiempo + " ms";
+        } else if (id < actual.idPasajero) {
+            actual = actual.izquierda; // Buscar en subárbol izquierdo
+        } else {
+            actual = actual.derecha; // Buscar en subárbol derecho
         }
-        System.out.println("Pasajero no encontrado.");
+    }
+    return "Pasajero no encontrado.";
     }
     
     
