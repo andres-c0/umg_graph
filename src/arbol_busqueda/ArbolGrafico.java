@@ -1,4 +1,4 @@
-package Proyectito;
+package arbol_busqueda;
 
 import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.swing.mxGraphComponent;

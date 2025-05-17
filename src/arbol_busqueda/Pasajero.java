@@ -1,4 +1,4 @@
-package Proyectito;
+package arbol_busqueda;
 
 public class Pasajero {
     int idPasajero;

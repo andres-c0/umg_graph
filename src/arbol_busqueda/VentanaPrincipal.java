@@ -1,4 +1,4 @@
-package Proyectito;
+package arbol_busqueda;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -17,6 +17,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private JTextField campoID, campoNombre, campoDPI, campoBuscar;
     private File archivoActual = null; // ? Para recordar el archivo CSV cargado
+    private java.util.List<Pasajero> historialInserciones = new java.util.ArrayList<>();
+
 
     public VentanaPrincipal() {
         setTitle("Gestión de Pasajeros");
@@ -119,11 +121,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 Pasajero p = new Pasajero(id, dpi, nombre);
                 arbol.insertar(p);
                 modeloTabla.addRow(new Object[]{id, dpi, nombre});
+                historialInserciones.add(p);
                 limpiarCampos();
                 guardarCSV();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "El campo ID debe ser un número entero válido.");
             }
+
+            
         });
 
         // Acción: Buscar
@@ -213,7 +218,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(archivoActual), StandardCharsets.UTF_8))) {
-            guardarNodoCSV(arbol.raiz, writer);
+
+            for (Pasajero p : historialInserciones) {
+                writer.write(p.idPasajero + "," + p.dpi + "," + p.nombre);
+                writer.newLine();
+            }
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al guardar CSV: " + e.getMessage());
         }
@@ -276,6 +286,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     Pasajero p = new Pasajero(id, dpi, nombre);
                     arbol.insertar(p);
                     modeloTabla.addRow(new Object[]{id, dpi, nombre});
+                    historialInserciones.add(p);
                 } catch (NumberFormatException ex) {
                     System.out.println("ID inválido en línea: " + linea);
                 }

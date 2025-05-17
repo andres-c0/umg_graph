@@ -1,4 +1,4 @@
-package Proyectito;
+package arbol_busqueda;
 
 import javax.swing.SwingUtilities;
 
