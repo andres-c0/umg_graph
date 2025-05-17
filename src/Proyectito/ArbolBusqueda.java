@@ -58,7 +58,7 @@ public class ArbolBusqueda {
         }
     }
     // Método auxiliar para buscar un nodo directamente sin imprimir
-    private Pasajero buscarNodo(Pasajero actual, int id) {
+    public Pasajero buscarNodo(Pasajero actual, int id) {
         while (actual != null) {
             if (id == actual.idPasajero){
                 return actual;

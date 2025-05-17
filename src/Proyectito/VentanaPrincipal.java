@@ -1,13 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package Proyectito;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -41,11 +36,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         campoBuscar = new JTextField(10);
 
         JScrollPane scrollTabla = new JScrollPane(tablaPasajeros);
-        JScrollPane scrollArbol = new JScrollPane(areaArbol);
-        scrollArbol.setBorder(BorderFactory.createTitledBorder("Árbol Binario"));
-
         // Panel superior con botones y campos
-        JPanel panelTop = new JPanel(new GridLayout(3, 1));
+        JPanel panelTop = new JPanel(new GridLayout(6, 1));
 
         // Fila 1: Cargar CSV y Buscar
         JPanel fila1 = new JPanel();
@@ -83,7 +75,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         // Agregar todo al layout principal
         add(panelTop, BorderLayout.NORTH);
         add(scrollTabla, BorderLayout.CENTER);
-        add(scrollArbol, BorderLayout.SOUTH);
 
         // Luego de que todo está inicializado, se intenta cargar archivo desde config.txt
         File config = new File(RUTA_CONFIG);
@@ -107,17 +98,31 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         // Acción: Insertar pasajero
         btnInsertar.addActionListener(e -> {
+            String idTexto = campoID.getText().trim();
+            String dpi = campoDPI.getText().trim();
+            String nombre = campoNombre.getText().trim();
+
+            // Validación de campos vacíos
+            if (idTexto.isEmpty() || dpi.isEmpty() || nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Todos los campos (ID, DPI, Nombre) son obligatorios.");
+                return;
+            }
+
             try {
-                int id = Integer.parseInt(campoID.getText());
-                String dpi = campoDPI.getText();
-                String nombre = campoNombre.getText();
+                int id = Integer.parseInt(idTexto);
+
+                if (arbol.buscarNodo(arbol.raiz, id) != null) {
+                    JOptionPane.showMessageDialog(this, "Ya existe un pasajero con ese ID.");
+                    return;
+                }
+
                 Pasajero p = new Pasajero(id, dpi, nombre);
                 arbol.insertar(p);
                 modeloTabla.addRow(new Object[]{id, dpi, nombre});
                 limpiarCampos();
                 guardarCSV();
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "ID debe ser numérico.");
+                JOptionPane.showMessageDialog(this, "El campo ID debe ser un número entero válido.");
             }
         });
 
@@ -150,9 +155,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 int id = Integer.parseInt(campoID.getText());
                 String nombre = campoNombre.getText();
                 String dpi = campoDPI.getText();
+
+                if (arbol.buscarNodo(arbol.raiz, id) == null) {
+                    JOptionPane.showMessageDialog(this, "No existe pasajero con ese ID.");
+                    return;
+                }
+
                 arbol.actualizar(id, nombre, dpi);
-                actualizarTabla();
-                guardarCSV();
+                actualizarTabla();   // Refresca tabla desde el árbol
+                guardarCSV();        // Guarda árbol actualizado al archivo
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "ID inválido.");
             }
@@ -245,17 +256,29 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
 
     private void cargarDesdeArchivo(File archivo) {
+        archivoActual = archivo;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 new FileInputStream(archivo), StandardCharsets.UTF_8))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] partes = linea.split(",");
-                int id = Integer.parseInt(partes[0]);
-                String dpi = partes[1];
-                String nombre = partes[2];
-                Pasajero p = new Pasajero(id, dpi, nombre);
-                arbol.insertar(p);
-                modeloTabla.addRow(new Object[]{id, dpi, nombre});
+
+                // ?? Validación de línea vacía o incompleta
+                if (partes.length < 3) {
+                    System.out.println("Línea inválida omitida: " + linea);
+                    continue;
+                }
+
+                try {
+                    int id = Integer.parseInt(partes[0].trim());
+                    String dpi = partes[1].trim();
+                    String nombre = partes[2].trim();
+                    Pasajero p = new Pasajero(id, dpi, nombre);
+                    arbol.insertar(p);
+                    modeloTabla.addRow(new Object[]{id, dpi, nombre});
+                } catch (NumberFormatException ex) {
+                    System.out.println("ID inválido en línea: " + linea);
+                }
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al leer el archivo: " + e.getMessage());
